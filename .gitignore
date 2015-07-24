@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# By aktokaji
+client_secrets.json
+*-oauth2.json
