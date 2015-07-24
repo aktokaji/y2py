@@ -10,9 +10,15 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.file import Storage
 from oauth2client.tools import argparser, run_flow
 
+
+
+
+import json
 # http://d.hatena.ne.jp/nishiohirokazu/20120112/1326355987
 import sys, codecs
 sys.stdout = codecs.getwriter(sys.stdout.encoding)(sys.stdout, errors='backslashreplace')
+
+
 
 
 # The CLIENT_SECRETS_FILE variable specifies the name of a file that contains
@@ -69,6 +75,12 @@ def get_authenticated_service(args):
   return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
     http=credentials.authorize(httplib2.Http()))
 
+def save_json_w_utf8(dic, filename):
+  s = json.dumps(dic, indent=2, ensure_ascii=False)
+  f = codecs.open(filename,'w','utf8')
+  f.write(s)
+  f.close()
+
 if __name__ == '__main__':
 
   args = argparser.parse_args()
@@ -82,24 +94,38 @@ if __name__ == '__main__':
 
   count = 0
 
+  list = []
+
   for channel in channels_response["items"]:
     print "[CH] %s" % (channel)
     history_list_id = channel["contentDetails"]["relatedPlaylists"]["favorites"]
 
+    # https://developers.google.com/youtube/v3/docs/playlistItems/list?hl=ja
     playlistitems_list_request = youtube.playlistItems().list(
       playlistId=history_list_id,
-      part="id,snippet",
+      part="id,snippet,contentDetails,status",
       maxResults=50)
 
     while playlistitems_list_request:
       playlistitems_list_response = playlistitems_list_request.execute()
 
       for playlist_item in playlistitems_list_response["items"]:
+        save_json_w_utf8(playlist_item, '@playlist_item.temp.json')
         title = playlist_item["snippet"]["title"]
         video_id = playlist_item["snippet"]["resourceId"]["videoId"]
+        video_pos = playlist_item["snippet"]["position"]
         count += 1
-        print "[%d] %s (%s)" % (count, title, video_id)
-        print "[%d] %s" % (count, playlist_item["id"])
+        print "[%d] %s (%s)" % (video_pos+1, title, video_id)
+        print "[%d] %s" % (video_pos+1, playlist_item["id"])
+        list.append({"pos":video_pos+1, "video_id":video_id, "title":title})
 
       playlistitems_list_request = youtube.playlistItems().list_next(
         playlistitems_list_request, playlistitems_list_response)
+
+  save_json_w_utf8({"d":list}, 'test.temp.json')
+  
+  for video in list:
+    print video
+    videos_response = youtube.videos().list(id=video["video_id"], part="statistics").execute()
+    save_json_w_utf8(videos_response, '@videos_response.temp.json')
+    break
