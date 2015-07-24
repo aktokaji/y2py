@@ -52,7 +52,8 @@ YOUTUBE_API_VERSION = "v3"
 VALID_OFFSET_TYPES = ("offsetFromEnd", "offsetFromStart",)
 
 def get_authenticated_service(args):
-  flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=YOUTUBE_SCOPE,
+  flow = flow_from_clientsecrets(os.path.join(os.path.dirname(__file__),CLIENT_SECRETS_FILE),
+    scope=YOUTUBE_SCOPE,
     message=MISSING_CLIENT_SECRETS_MESSAGE)
 
   storage = Storage("%s-oauth2.json" % sys.argv[0])
