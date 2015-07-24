@@ -92,8 +92,6 @@ if __name__ == '__main__':
   #channels_response = youtube.channels().list(mine=True, part="id,snippet,contentDetails").execute()
   
 
-  count = 0
-
   list = []
 
   for channel in channels_response["items"]:
@@ -114,7 +112,6 @@ if __name__ == '__main__':
         title = playlist_item["snippet"]["title"]
         video_id = playlist_item["snippet"]["resourceId"]["videoId"]
         video_pos = playlist_item["snippet"]["position"]
-        count += 1
         print "[%d] %s (%s)" % (video_pos+1, title, video_id)
         print "[%d] %s" % (video_pos+1, playlist_item["id"])
         list.append({"pos":video_pos+1, "video_id":video_id, "title":title})
