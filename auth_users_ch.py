@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     playlistitems_list_request = youtube.playlistItems().list(
       playlistId=history_list_id,
-      part="snippet",
+      part="id,snippet",
       maxResults=50)
 
     while playlistitems_list_request:
@@ -99,6 +99,7 @@ if __name__ == '__main__':
         video_id = playlist_item["snippet"]["resourceId"]["videoId"]
         count += 1
         print "[%d] %s (%s)" % (count, title, video_id)
+        print "[%d] %s" % (count, playlist_item["id"])
 
       playlistitems_list_request = youtube.playlistItems().list_next(
         playlistitems_list_request, playlistitems_list_response)
