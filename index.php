@@ -11,9 +11,11 @@ for($i=0; $i<count($arr['d']); $i++)
 {
   $v=$arr['d'][$i];
   ?>
+  <a target="_blank" href="http://www.youtube.com/embed/<?= $v['video_id'] ?>?autoplay=1&rel=0">
     <!-- <img class="lazy" data-original="https://i.ytimg.com/vi/<?= $v['video_id'] ?>/default.jpg" width="120" height="90" style="vertical-align: middle;" /> -->
     <img src='https://i.ytimg.com/vi/<?= $v['video_id'] ?>/default.jpg' width='120' height='90' style="vertical-align: middle;" />
     <?= $v['pos'] ?>. <?= $v['title'] ?> <br />
+  </a>
   <?php
 }
 
