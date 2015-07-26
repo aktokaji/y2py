@@ -66,7 +66,8 @@ def get_authenticated_service(args):
     scope=YOUTUBE_SCOPE,
     message=MISSING_CLIENT_SECRETS_MESSAGE)
 
-  storage = Storage("%s-oauth2.json" % sys.argv[0])
+  #storage = Storage("%s-oauth2.json" % sys.argv[0])
+  storage = Storage(os.path.join(os.path.dirname(__file__),"@installed-oauth2.json"))
   credentials = storage.get()
 
   if credentials is None or credentials.invalid:
@@ -81,6 +82,10 @@ def save_json_w_utf8(dic, filename):
   f.write(s)
   f.close()
 
+def print_json(dic):
+  s = json.dumps(dic, indent=2, ensure_ascii=False)
+  print "%s" % (s)
+
 if __name__ == '__main__':
 
   args = argparser.parse_args()
@@ -88,41 +93,7 @@ if __name__ == '__main__':
   youtube = get_authenticated_service(args)
 
   # https://developers.google.com/youtube/v3/docs/channels/list
-  channels_response = youtube.channels().list(mine=True, part="contentDetails").execute()
-  #channels_response = youtube.channels().list(mine=True, part="id,snippet,contentDetails").execute()
-  
+  #channels_response = youtube.channels().list(mine=True, part="contentDetails").execute()
+  channels_response = youtube.channels().list(mine=True, part="id,snippet,contentDetails").execute()
 
-  list = []
-
-  for channel in channels_response["items"]:
-    print "[CH] %s" % (channel)
-    history_list_id = channel["contentDetails"]["relatedPlaylists"]["favorites"]
-
-    # https://developers.google.com/youtube/v3/docs/playlistItems/list?hl=ja
-    playlistitems_list_request = youtube.playlistItems().list(
-      playlistId=history_list_id,
-      part="id,snippet,contentDetails,status",
-      maxResults=50)
-
-    while playlistitems_list_request:
-      playlistitems_list_response = playlistitems_list_request.execute()
-
-      for playlist_item in playlistitems_list_response["items"]:
-        save_json_w_utf8(playlist_item, '@playlist_item.temp.json')
-        title = playlist_item["snippet"]["title"]
-        video_id = playlist_item["snippet"]["resourceId"]["videoId"]
-        video_pos = playlist_item["snippet"]["position"]
-        print "[%d] %s (%s)" % (video_pos+1, title, video_id)
-        print "[%d] %s" % (video_pos+1, playlist_item["id"])
-        list.append({"pos":video_pos+1, "video_id":video_id, "title":title})
-
-      playlistitems_list_request = youtube.playlistItems().list_next(
-        playlistitems_list_request, playlistitems_list_response)
-
-  save_json_w_utf8({"d":list}, 'test.temp.json')
-  
-  for video in list:
-    print video
-    videos_response = youtube.videos().list(id=video["video_id"], part="statistics").execute()
-    save_json_w_utf8(videos_response, '@videos_response.temp.json')
-    break
+  print_json(channels_response)
