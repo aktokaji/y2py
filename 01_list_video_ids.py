@@ -1,4 +1,5 @@
-#!/usr/bin/python
+﻿#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import httplib2
 import os
@@ -16,7 +17,8 @@ from oauth2client.tools import argparser, run_flow
 import json
 # http://d.hatena.ne.jp/nishiohirokazu/20120112/1326355987
 import sys, codecs
-sys.stdout = codecs.getwriter(sys.stdout.encoding)(sys.stdout, errors='backslashreplace')
+#sys.stdout = codecs.getwriter(sys.stdout.encoding)(sys.stdout, errors='backslashreplace')
+sys.stdout = codecs.getwriter(sys.stdout.encoding)(sys.stdout, errors='xmlcharrefreplace')
 
 
 
@@ -94,6 +96,9 @@ if __name__ == '__main__':
   
 
   list = []
+  sjis = codecs.open("@sjis.txt",'w','shift_jis')
+  utf8 = codecs.open("@utf8.txt",'w','utf8')
+
 
   for channel in channels_response["items"]:
     print "[CH] %s" % (channel)
@@ -113,8 +118,15 @@ if __name__ == '__main__':
         title = playlist_item["snippet"]["title"]
         video_id = playlist_item["snippet"]["resourceId"]["videoId"]
         video_pos = playlist_item["snippet"]["position"]
-        print "[%d] %s (%s)" % (video_pos+1, title, video_id)
-        print "[%d] %s" % (video_pos+1, playlist_item["id"])
+        # http://docs.python.jp/2/howto/unicode.html
+        print u"ビデオ 视频[%d] %s (%s)" % (video_pos+1, title, video_id)
+        fp_str1 = u"ビデオ 视频[%d] %s (%s)\n" % (video_pos+1, title, video_id)
+        fp_str2 = fp_str1.encode('shift_jis', 'replace')
+        fp_str3 = fp_str2.decode('shift_jis')
+        #print fp_str3
+        sjis.write(fp_str3)
+        utf8.write(u"ビデオ 视频[%d] %s (%s)\n" % (video_pos+1, title, video_id))
+        print u"アイテムID [%d] %s" % (video_pos+1, playlist_item["id"])
         list.append({"pos":video_pos+1, "video_id":video_id, "title":title})
 
       playlistitems_list_request = youtube.playlistItems().list_next(

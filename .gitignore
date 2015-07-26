@@ -57,6 +57,7 @@ docs/_build/
 target/
 
 # By aktokaji
+@*
 client_secrets.json
 *.temp.json
 *-oauth2.json
