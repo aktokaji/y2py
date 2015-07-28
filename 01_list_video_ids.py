@@ -20,6 +20,8 @@ import sys, codecs
 #sys.stdout = codecs.getwriter(sys.stdout.encoding)(sys.stdout, errors='backslashreplace')
 sys.stdout = codecs.getwriter(sys.stdout.encoding)(sys.stdout, errors='xmlcharrefreplace')
 
+import mymod
+
 
 
 
@@ -121,8 +123,10 @@ if __name__ == '__main__':
         # http://docs.python.jp/2/howto/unicode.html
         print u"ビデオ 视频[%d] %s (%s)" % (video_pos+1, title, video_id)
         fp_str1 = u"ビデオ 视频[%d] %s (%s)\n" % (video_pos+1, title, video_id)
-        fp_str2 = fp_str1.encode('shift_jis', 'replace')
-        fp_str3 = fp_str2.decode('shift_jis')
+        #fp_str2 = fp_str1.encode('shift_jis', 'replace')
+        #fp_str3 = fp_str2.decode('shift_jis')
+        fp_str3 = fp_str1.encode('shift_jis', 'replace').decode('shift_jis')
+
         #print fp_str3
         sjis.write(fp_str3)
         utf8.write(u"ビデオ 视频[%d] %s (%s)\n" % (video_pos+1, title, video_id))
@@ -133,7 +137,13 @@ if __name__ == '__main__':
         playlistitems_list_request, playlistitems_list_response)
 
   save_json_w_utf8({"d":list}, 'test.temp.json')
-  
+
+  # JSONファイル書き込み  http://d.hatena.ne.jp/fenrifja/20130306/1362571700
+  with codecs.open('test2.temp.json','w','utf8') as f:
+    json.dump({"d":list}, f, indent=2, ensure_ascii=False)
+
+  mymod.save_json_w_utf8({"d":list}, 'test3.temp.json')
+
   for video in list:
     print video
     videos_response = youtube.videos().list(id=video["video_id"], part="statistics").execute()
