@@ -1,3 +1,5 @@
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js" type="text/javascript"></script>
+
 <pre>
 <?php
 // http://becodes.com/%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0/php%E3%81%A7youtube-data-api-v3%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E5%86%8D%E7%94%9F%E3%83%AA%E3%82%B9%E3%83%88%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B/
@@ -73,22 +75,29 @@ function youtube_search($query, $max_results, $next_page_token=''){
 
             // than first loop
         $searchResponse = $youtube->playlistItems->listPlaylistItems('id,snippet,contentDetails', $params);
+        $videoPos = 0;
         foreach ($searchResponse['items'] as $searchResult) {
-        $videoPos = $searchResult['snippet']['position'];
+        $videoPos = $searchResult['snippet']['position'] + 1;
         $videoId = $searchResult['snippet']['resourceId']['videoId'];
         $videoTitle = $searchResult['snippet']['title'];
         $videoThumb = $searchResult['snippet']['thumbnails']['high']['url'];
         $videoDesc = $searchResult['snippet']['description'];
         //$watchUrl = 'http://www.youtube.com/embed/' . $videoId .'?autoplay=1&rel=0">';
         $watchUrl = 'http://www.youtube.com/watch?v=' . $videoId;
-        print '<div><a target="_blank" href="' . $watchUrl . '">'.
+        print '<div id="video' . $videoPos . '"><a target="_blank" href="' . $watchUrl . '">'.
                     $videoPos . '. ' . $videoTitle.'<br/><br/><img src="'.
                     $videoThumb.'" /><br/>'.
                     $videoId.'<br/>'.
                     '<pre>'.$videoDesc.'</pre><br/>'.
-                    '</a></div><br/><br/>';
+                    '</a></div><br/><br/>'; //.
+                    //'<script>$("html,body").animate({scrollTop:$("#video'.$videoPos.'").offset().top});</script>';
         ob_flush();
         flush();
+        }
+        if($videoPos != 0) {
+            echo '<script>$("html,body").animate({scrollTop:$("#video'.$videoPos.'").offset().top});</script>';
+            ob_flush();
+            flush();
         }
 
           // checking if nextPageToken exist than return our function and 
