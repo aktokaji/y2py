@@ -80,11 +80,11 @@ def get_authenticated_service(args):
   return build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
     http=credentials.authorize(httplib2.Http()))
 
-def save_json_w_utf8(dic, filename):
-  s = json.dumps(dic, indent=2, ensure_ascii=False)
-  f = codecs.open(filename,'w','utf8')
-  f.write(s)
-  f.close()
+#def save_json_w_utf8(dic, filename):
+#  s = json.dumps(dic, indent=2, ensure_ascii=False)
+#  f = codecs.open(filename,'w','utf8')
+#  f.write(s)
+#  f.close()
 
 if __name__ == '__main__':
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
       playlistitems_list_response = playlistitems_list_request.execute()
 
       for playlist_item in playlistitems_list_response["items"]:
-        save_json_w_utf8(playlist_item, '@playlist_item.temp.json')
+        mymod.save_json_w_utf8(playlist_item, '@playlist_item.temp.json')
         title = playlist_item["snippet"]["title"]
         video_id = playlist_item["snippet"]["resourceId"]["videoId"]
         video_pos = playlist_item["snippet"]["position"]
@@ -136,16 +136,16 @@ if __name__ == '__main__':
       playlistitems_list_request = youtube.playlistItems().list_next(
         playlistitems_list_request, playlistitems_list_response)
 
-  save_json_w_utf8({"d":list}, 'test.temp.json')
+  mymod.save_json_w_utf8({"d":list}, 'test.temp.json')
 
   # JSONファイル書き込み  http://d.hatena.ne.jp/fenrifja/20130306/1362571700
-  with codecs.open('test2.temp.json','w','utf8') as f:
-    json.dump({"d":list}, f, indent=2, ensure_ascii=False)
+  #with codecs.open('test2.temp.json','w','utf8') as f:
+  #  json.dump({"d":list}, f, indent=2, ensure_ascii=False)
 
-  mymod.save_json_w_utf8({"d":list}, 'test3.temp.json')
+  #mymod.save_json_w_utf8({"d":list}, 'test3.temp.json')
 
   for video in list:
     print video
     videos_response = youtube.videos().list(id=video["video_id"], part="statistics").execute()
-    save_json_w_utf8(videos_response, '@videos_response.temp.json')
+    mymod.save_json_w_utf8(videos_response, '@videos_response.temp.json')
     break

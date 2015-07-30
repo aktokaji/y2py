@@ -61,3 +61,5 @@ target/
 client_secrets.json
 *.temp.json
 *-oauth2.json
+/google-api-php-client-master.zip
+/google-api-php-client-master

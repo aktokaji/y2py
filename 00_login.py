@@ -12,6 +12,7 @@ from oauth2client.tools import argparser, run_flow
 
 
 
+import mymod
 
 import json
 # http://d.hatena.ne.jp/nishiohirokazu/20120112/1326355987
@@ -89,6 +90,8 @@ def print_json(dic):
 if __name__ == '__main__':
 
   args = argparser.parse_args()
+
+  mymod.del_installed_oauth2_json()
 
   youtube = get_authenticated_service(args)
 
