@@ -63,3 +63,5 @@ client_secrets.json
 *-oauth2.json
 /google-api-php-client-master.zip
 /google-api-php-client-master
+/nbproject/private/
+/nbproject

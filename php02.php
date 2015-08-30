@@ -6,6 +6,7 @@
 // https://github.com/google/google-api-php-client
 // http://localhost/phpmyadmin/index.php
 // https://console.developers.google.com
+// array_chunk http://php.plus-server.net/function.array-chunk.html
 
 // ①ライブラリの読み込み
 require_once 'google-api-php-client-master/src/Google/autoload.php';
